@@ -1,0 +1,56 @@
+import ephem
+import smtplib
+from email.mime.text import MIMEText
+from flask import Flask
+
+# Set up the Flask application
+app = Flask(__name__)
+
+# Define the email settings
+sender_email = 'youremail@example.com'
+sender_password = 'yourpassword'
+receiver_email = 'recipient@example.com'
+smtp_server = 'smtp.example.com'
+smtp_port = 587
+
+# Define the full moon reminder function
+def full_moon_reminder():
+    # Get the date of the next full moon
+    moon = ephem.Moon()
+    next_full_moon = ephem.next_full_moon(ephem.now())
+    next_full_moon_date = next_full_moon.datetime().strftime('%Y-%m-%d %H:%M:%S')
+
+    # Send an email reminder
+    message = f'The next full moon is on {next_full_moon_date}.'
+    msg = MIMEText(message)
+    msg['Subject'] = 'Full Moon Reminder'
+    msg['From'] = sender_email
+    msg['To'] = receiver_email
+
+    try:
+        server = smtplib.SMTP(smtp_server, smtp_port)
+        server.starttls()
+        server.login(sender_email, sender_password)
+        server.sendmail(sender_email, receiver_email, msg.as_string())
+        print('Full moon reminder sent successfully')
+    except:
+        print('Error sending full moon reminder')
+
+# Define the route for the web application
+@app.route('/')
+def index():
+    # Get the date of the next full moon
+    moon = ephem.Moon()
+    next_full_moon = ephem.next_full_moon(ephem.now())
+    next_full_moon_date = next_full_moon.datetime().strftime('%Y-%m-%d %H:%M:%S')
+
+    # Check if the next full moon is within the next 24 hours
+    if next_full_moon.datetime() < (ephem.now() + 1):
+        full_moon_reminder()
+
+    # Display the next full moon date on the web page
+    return f'The next full moon is on {next_full_moon_date}.'
+
+# Start the web application
+if __name__ == '__main__':
+    app.run()
