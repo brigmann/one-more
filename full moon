@@ -20,7 +20,7 @@ def full_moon_reminder():
     next_full_moon = ephem.next_full_moon(ephem.now())
     next_full_moon_date = next_full_moon.datetime().strftime('%Y-%m-%d %H:%M:%S')
 
-    # Send an email reminder 
+    # Send an email reminder here 
     message = f'The next full moon is on {next_full_moon_date}.'
     msg = MIMEText(message)
     msg['Subject'] = 'Full Moon Reminder'
