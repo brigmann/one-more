@@ -3,7 +3,7 @@ import smtplib
 from email.mime.text import MIMEText
 from flask import Flask
 
-# Set up the Flask application
+# Set up the  Flask application
 app = Flask(__name__)
 
 # Define the email settings
